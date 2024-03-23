@@ -6,8 +6,20 @@ movies_about = pickle.load(open('Pickle_files/movie_about.pkl','rb'))
 similarity = pickle.load(open('Pickle_files/similarity.pkl','rb'))
 posters = pickle.load(open('Pickle_files/posters.pkl','rb'))
 
-
 st.set_page_config(layout="wide")
+
+st.markdown(
+    """
+    <style>
+    .reportview-container {
+        background: #1a1a1a;
+        color: #f8f8f8;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 
 def fetch_poster(movie_name):
   movie_id = movies_data[movies_data['title'] == movie_name]['id'].iloc[0]
