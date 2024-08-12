@@ -42,11 +42,7 @@ This project is a web application developed using Streamlit that serves as an IM
    git clone https://github.com/sabeer-k-s/Movie-Hub.git
    ```
 
-2. Install the required dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
+2. Install the required dependencies
 
 3. Run the application:
 
