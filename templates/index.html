@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMDb Clone</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #f5c518;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #000;
+        }
+        .navbar-brand {
+            color: #f5c518 !important;
+            font-weight: bold;
+        }
+        .navbar-brand:hover {
+            color: #fff !important;
+        }
+        
+        .movie-container {
+            background: #1c1c1c;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .movie-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .recommendation-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+        .recommendation-item img {
+            border-radius: 5px;
+        }
+        footer {
+            background-color: #000;
+            color: #f5c518;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">IMDb Clone</a>
+    </nav>
+
+
+    
+    <div class="container">
+        <div class="movie-container">
+            <h2 class="text-center">Search for a Movie</h2>
+            <div class="form-group">
+                <label for="movie-name">Movie Name:</label>
+                <select id="movie-name" class="form-control">
+                    {% for movie in movies %}
+                    <option value="{{ movie }}">{{ movie }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button id="search-button" class="btn btn-primary btn-block">Search</button>
+        </div>
+
+        <div id="movie-details" class="movie-container" style="display: none;">
+            <div class="row">
+                <div class="col-md-4">
+                    <img id="movie-poster" class="img-fluid" alt="Movie Poster">
+                </div>
+                <div class="col-md-8">
+                    <h3 id="movie-title" class="movie-title"></h3>
+                    <p id="movie-overview"></p>
+                    <p><strong>Genre:</strong> <span id="movie-genre"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="recommendations" class="movie-container" style="display: none;">
+            <h3 class="recommendation-title">Recommended Movies</h3>
+            <div class="row" id="recommendation-list">
+                <!-- Dynamic Recommendations -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 IMDb Clone. All rights reserved.</p>
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            function searchMovie(movieName) {
+                $.post('/search', { movie_name: movieName }, function(data) {
+                    // Update movie details
+                    $('#movie-title').text(movieName);
+                    $('#movie-poster').attr('src', data.poster);
+                    $('#movie-overview').text(data.overview);
+                    $('#movie-genre').text(data.genre);
+                    $('#movie-details').show();
+
+                    // Update recommendations
+                    $('#recommendation-list').empty();
+                    data.recommend.forEach((movie, index) => {
+                        const movieCard = `
+                            <div class="col-md-2 text-center recommendation-item">
+                                <img src="${data.recommend_posters[index]}" class="img-fluid" alt="${movie}">
+                                <p>${movie}</p>
+                            </div>
+                        `;
+                        $('#recommendation-list').append(movieCard);
+                    });
+                    $('#recommendations').show();
+                }).fail(function() {
+                    alert('Movie not found!');
+                });
+            }
+
+            $('#search-button').click(function() {
+                const movieName = $('#movie-name').val();
+                searchMovie(movieName);
+            });
+
+            $('#navbar-search-button').click(function() {
+                const movieName = $('#navbar-movie-name').val();
+                searchMovie(movieName);
+            });
+        });
+    </script>
+</body>
+</html>
